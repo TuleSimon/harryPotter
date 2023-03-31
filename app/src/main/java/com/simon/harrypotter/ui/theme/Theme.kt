@@ -18,6 +18,7 @@ import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
+import simonShapes
 
 private val DarkColorScheme = darkColorScheme(
     primary = primary,
@@ -65,6 +66,7 @@ fun HarryPotterTheme(
     MaterialTheme(
         colorScheme = colorScheme,
         typography = Typography,
-        content = content
+        content = content,
+        shapes = simonShapes
     )
 }

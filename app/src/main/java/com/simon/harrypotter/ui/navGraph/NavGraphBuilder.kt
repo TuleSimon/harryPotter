@@ -8,6 +8,7 @@ import androidx.navigation.NavHostController
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.composable
 import com.simon.harrypotter.ui.components.BodyTextBold
+import com.simon.harrypotter.ui.screens.homescreen.HomeScreen
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
@@ -19,7 +20,7 @@ fun SetUpNavGraph(navController: NavHostController) {
     ) {
 
         composable(route= Screen.HomeScreen.route){
-            BodyTextBold("Hello", modifier = Modifier.statusBarsPadding())
+            HomeScreen()
         }
 
     }

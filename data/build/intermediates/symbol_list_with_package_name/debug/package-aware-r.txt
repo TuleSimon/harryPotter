@@ -1,2 +1,1 @@
 com.simon.data
-string we_are_reviewing_your_license
