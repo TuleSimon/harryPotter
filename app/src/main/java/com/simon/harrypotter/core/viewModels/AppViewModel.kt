@@ -8,7 +8,6 @@ import com.simon.data.network.repositories.NetworkResult
 import com.simon.harrypotter.ui.navGraph.Screen
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
@@ -41,6 +40,16 @@ class AppViewModel(private val repository: NetworkRepository):ViewModel() {
         else{
             emptyList()
         }
+    }
+
+    val showDropDown = uiEvents.combine(searchedCharacters){event, searchCharacters ->
+        if(event is Events.Search && searchCharacters.isNotEmpty()){
+            return@combine true
+        }
+        else{
+            false
+        }
+
     }
 
 

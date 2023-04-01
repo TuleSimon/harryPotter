@@ -26,23 +26,29 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.toSize
 import coil.compose.AsyncImage
 import com.simon.data.models.characters.CharactersResponseItem
 import com.simon.data.models.characters.isMale
 import com.simon.data.network.repositories.NetworkResult
 import com.simon.harrypotter.R
 import com.simon.harrypotter.core.viewModels.AppViewModel
+import com.simon.harrypotter.core.viewModels.Events
 import com.simon.harrypotter.ui.components.BodyText
 import com.simon.harrypotter.ui.components.TitleText
 import com.simon.harrypotter.ui.components.appbars.SimonAppBars
 import com.simon.harrypotter.ui.components.buttons.FilledButton
 import com.simon.harrypotter.ui.components.buttons.SimonIconButton
+import com.simon.harrypotter.ui.components.dropdown.SearchDropDowns
 import com.simon.harrypotter.ui.components.images.AnimatedImageLoader
 import com.simon.harrypotter.ui.components.images.ScaleAndAlphaArgs
 import com.simon.harrypotter.ui.components.images.calculateDelayAndEasing
@@ -53,6 +59,9 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun HomeScreen(appViewModel: AppViewModel = koinViewModel()){
 
+    //UI STATE
+    val eventsState = appViewModel.uiEvents.collectAsState(initial = Events.Idle)
+
     //SEARCH
     val isSearchMode  = remember{
         mutableStateOf(false)
@@ -60,6 +69,8 @@ fun HomeScreen(appViewModel: AppViewModel = koinViewModel()){
     val searchValue = rememberSaveable(){
         mutableStateOf("")
     }
+    var searchFieldSize by remember { mutableStateOf(Size.Zero) }
+    val shouldShowDropDown = appViewModel.showDropDown.collectAsState(initial = false)
 
 
     //BACK HANDLER
@@ -73,6 +84,10 @@ fun HomeScreen(appViewModel: AppViewModel = koinViewModel()){
     }
 
     val characters = appViewModel.characters.collectAsState(initial = NetworkResult.Idle)
+    val searchedCharacters = appViewModel.searchedCharacters.collectAsState(initial = emptyList())
+    val hasMoreItems = remember(searchedCharacters){
+        searchedCharacters.value.size>10
+    }
     LaunchedEffect(true){
         getCharacters()
     }
@@ -105,7 +120,10 @@ fun HomeScreen(appViewModel: AppViewModel = koinViewModel()){
                         modifier = Modifier
                             .statusBarsPadding()
                             .padding(defaultPadding)
-                            .fillMaxWidth(),
+                            .fillMaxWidth()
+                            .onGloballyPositioned { coordinates ->
+                                searchFieldSize = coordinates.size.toSize()
+                            },
                         shape = shapes.large,
                         colors = TextFieldDefaults.outlinedTextFieldColors(
                             containerColor = colorScheme.surface,
@@ -137,6 +155,20 @@ fun HomeScreen(appViewModel: AppViewModel = koinViewModel()){
                             }
                         }
                     )
+                    
+                    SearchDropDowns(
+                        expanded = shouldShowDropDown.value,
+                        setExpanded = {},
+                        modifier =Modifier .width(with(LocalDensity.current) { searchFieldSize.width.toDp() }),
+                        items =if(hasMoreItems) searchedCharacters.value.subList(0,9) else searchedCharacters.value,
+                        hasMoreItems =hasMoreItems ,
+                        onClick = { 3}
+                    ) {
+                        
+                    }
+
+
+
                 }
             }
         },
@@ -146,7 +178,8 @@ fun HomeScreen(appViewModel: AppViewModel = koinViewModel()){
         LazyVerticalGrid(columns =GridCells.Fixed(4),
             modifier = Modifier
                 .padding(top = it.calculateTopPadding())
-                .fillMaxSize().padding(defaultPadding),
+                .fillMaxSize()
+                .padding(defaultPadding),
             state = state,
             horizontalArrangement = Arrangement.spacedBy(10.dp),
             verticalArrangement = Arrangement.spacedBy(20.dp)
