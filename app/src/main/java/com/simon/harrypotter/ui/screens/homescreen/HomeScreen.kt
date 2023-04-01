@@ -54,6 +54,7 @@ import com.simon.harrypotter.ui.components.images.calculateDelayAndEasing
 import com.simon.harrypotter.ui.components.images.scaleAndAlpha
 import com.simon.harrypotter.ui.theme.defaultPadding
 import org.koin.androidx.compose.koinViewModel
+import timber.log.Timber
 
 @Composable
 fun HomeScreen(appViewModel: AppViewModel = koinViewModel()){
@@ -96,6 +97,7 @@ fun HomeScreen(appViewModel: AppViewModel = koinViewModel()){
         getCharacters()
     }
     val isLoading = remember(characters.value){
+        Timber.v(characters.value.toString())
         characters.value is NetworkResult.Loading
     }
 
@@ -111,7 +113,7 @@ fun HomeScreen(appViewModel: AppViewModel = koinViewModel()){
                         shouldShowBackButton = false,
                         actions = {
                             SimonIconButton(icon = Icons.Outlined.Search) {
-                                appViewModel.performEvent(Events.Idle)
+                                appViewModel.performEvent(Events.Search(""))
                             }
                         })
                 }

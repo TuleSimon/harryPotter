@@ -9,8 +9,10 @@ import com.simon.harrypotter.ui.navGraph.Screen
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.consumeAsFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 class AppViewModel(private val repository: NetworkRepository):ViewModel() {
 
@@ -20,6 +22,7 @@ class AppViewModel(private val repository: NetworkRepository):ViewModel() {
 
     fun getAllCharacters() = viewModelScope.launch {
         repository.getCharacters().collect{
+            Timber.v(it.toString())
             _characters.send(it)
         }
     }
@@ -29,12 +32,14 @@ class AppViewModel(private val repository: NetworkRepository):ViewModel() {
     val uiEvents : Flow<Events>
         get() = _uiEvents.receiveAsFlow()
     fun performEvent(event: Events) = viewModelScope.launch{
+        Timber.v(event.toString())
             _uiEvents.send(event)
     }
 
-    val searchedCharacters = characters.combine(uiEvents){characters,events ->
+    val searchedCharacters = _characters.receiveAsFlow().combine(_uiEvents.receiveAsFlow()){characters,events ->
         if(events is Events.Search && characters is NetworkResult.Success ){
             val searchedText = events.searchText
+            Timber.v(searchedText)
             return@combine characters.data.filter { it.name.contains(searchedText) || it.house.contains(searchedText)}
         }
         else{

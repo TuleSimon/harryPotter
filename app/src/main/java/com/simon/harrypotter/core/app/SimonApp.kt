@@ -7,6 +7,7 @@ import com.simon.harrypotter.core.di.appModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.startKoin
+import timber.log.Timber
 
 class SimonApp():Application() {
     override fun onCreate() {
@@ -16,5 +17,6 @@ class SimonApp():Application() {
             androidContext(this@SimonApp)
             modules(NetworkModule, LocalModule,appModule)
         }
+        Timber.plant(Timber.DebugTree())
     }
 }
