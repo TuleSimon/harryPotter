@@ -6,37 +6,36 @@ import com.simon.data.models.characters.CharactersResponseItem
 import com.simon.data.network.repositories.NetworkRepository
 import com.simon.data.network.repositories.NetworkResult
 import com.simon.harrypotter.ui.navGraph.Screen
+import kotlinx.coroutines.ObsoleteCoroutinesApi
+import kotlinx.coroutines.channels.BroadcastChannel
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.consumeAsFlow
-import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
 class AppViewModel(private val repository: NetworkRepository):ViewModel() {
 
-    private val _characters = Channel<NetworkResult<List<CharactersResponseItem>>>()
+    private val _characters = MutableStateFlow<NetworkResult<List<CharactersResponseItem>>>(NetworkResult.Idle)
     val characters : Flow<NetworkResult<List<CharactersResponseItem>>>
-        get() = _characters.receiveAsFlow()
+        get() = _characters
 
     fun getAllCharacters() = viewModelScope.launch {
         repository.getCharacters().collect{
             Timber.v(it.toString())
-            _characters.send(it)
+            _characters.value=(it)
         }
     }
 
 
-    private val _uiEvents = Channel<Events>()
-    val uiEvents : Flow<Events>
-        get() = _uiEvents.receiveAsFlow()
+    private val _uiEvents = MutableSharedFlow<Events>()
+    val uiEvents : SharedFlow<Events>
+        get() = _uiEvents.asSharedFlow()
     fun performEvent(event: Events) = viewModelScope.launch{
         Timber.v(event.toString())
-            _uiEvents.send(event)
+            _uiEvents.emit(event)
     }
 
-    val searchedCharacters = _characters.receiveAsFlow().combine(_uiEvents.receiveAsFlow()){characters,events ->
+    val searchedCharacters = _characters.combine(uiEvents){ characters, events ->
         if(events is Events.Search && characters is NetworkResult.Success ){
             val searchedText = events.searchText
             Timber.v(searchedText)
