@@ -41,6 +41,7 @@ import com.simon.harrypotter.core.viewModels.AppViewModel
 import com.simon.harrypotter.ui.components.BodyText
 import com.simon.harrypotter.ui.components.TitleText
 import com.simon.harrypotter.ui.components.appbars.SimonAppBars
+import com.simon.harrypotter.ui.components.buttons.FilledButton
 import com.simon.harrypotter.ui.components.buttons.SimonIconButton
 import com.simon.harrypotter.ui.components.images.AnimatedImageLoader
 import com.simon.harrypotter.ui.components.images.ScaleAndAlphaArgs
@@ -216,8 +217,8 @@ fun HomeScreen(appViewModel: AppViewModel = koinViewModel()){
                         textAlign = TextAlign.Center, modifier = Modifier.fillMaxWidth(0.75f))
 
                         Spacer(modifier = Modifier.height(20.dp))
-                        Button(onClick = { getCharacters()  }, modifier = Modifier.fillMaxWidth(0.75F)) {
-                            BodyText(text = "Retry",color = colorScheme.onPrimary)
+                        FilledButton(modifier = Modifier.fillMaxWidth(0.75F), text = "Retry") {
+                            getCharacters()
                         }
 
                     }
