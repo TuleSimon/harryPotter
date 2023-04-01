@@ -39,7 +39,16 @@ class AppViewModel(private val repository: NetworkRepository):ViewModel() {
         if(events is Events.Search && characters is NetworkResult.Success ){
             val searchedText = events.searchText
             Timber.v(searchedText)
-            return@combine characters.data.filter { it.name.contains(searchedText) || it.house.contains(searchedText)}
+            if(searchedText.isNotEmpty()) {
+                return@combine characters.data.filter {
+                    it.name.contains(searchedText,true) || it.house.contains(
+                        searchedText,true
+                    )
+                }
+            }
+            else{
+                emptyList()
+            }
         }
         else{
             emptyList()

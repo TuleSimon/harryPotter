@@ -20,6 +20,7 @@ import androidx.compose.ui.window.PopupProperties
 import com.simon.data.models.characters.CharactersResponseItem
 import com.simon.harrypotter.ui.components.buttons.FilledButton
 import com.simon.harrypotter.ui.screens.homescreen.components.CharactersRowItem
+import com.simon.harrypotter.ui.theme.defaultPadding
 
 
 @Composable
@@ -33,7 +34,7 @@ fun SearchDropDowns(
     onSeeAll:()->Unit,
 ) {
     MaterialTheme(
-        shapes = shapes.copy(extraSmall = RoundedCornerShape(10.dp))
+        shapes = shapes.copy(extraSmall = RoundedCornerShape(15.dp))
     ) {
         DropdownMenu(
             expanded = expanded,
@@ -46,7 +47,8 @@ fun SearchDropDowns(
                         else colorScheme.primary.copy(0.2f),
                         shape = shapes.medium
                     )
-                    .background(colorScheme.surface)
+                    .background(colorScheme.background)
+                    .padding(defaultPadding)
                     .clipToBounds()
             ),
             properties = PopupProperties(

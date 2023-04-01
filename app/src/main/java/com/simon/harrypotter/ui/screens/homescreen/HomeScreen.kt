@@ -90,8 +90,8 @@ fun HomeScreen(appViewModel: AppViewModel = koinViewModel()){
 
     val characters = appViewModel.characters.collectAsState(initial = NetworkResult.Idle)
     val searchedCharacters = appViewModel.searchedCharacters.collectAsState(initial = emptyList())
-    val hasMoreItems = remember(searchedCharacters){
-        searchedCharacters.value.size>10
+    val hasMoreItems = remember(searchedCharacters.value){
+        searchedCharacters.value.size>5
     }
     LaunchedEffect(true){
         getCharacters()
@@ -118,59 +118,75 @@ fun HomeScreen(appViewModel: AppViewModel = koinViewModel()){
                         })
                 }
                 else{
-                    OutlinedTextField(value = searchValue,
-                        onValueChange ={newText -> appViewModel.performEvent(Events.Search(newText)) },
-                        textStyle = typography.bodyMedium.copy(
-                            color = colorScheme.onBackground.copy(0.7f)),
-                        placeholder ={ BodyText(text = "Search") },
-                        modifier = Modifier
-                            .statusBarsPadding()
-                            .padding(defaultPadding)
-                            .fillMaxWidth()
-                            .onGloballyPositioned { coordinates ->
-                                searchFieldSize = coordinates.size.toSize()
-                            },
-                        shape = shapes.large,
-                        colors = TextFieldDefaults.outlinedTextFieldColors(
-                            containerColor = colorScheme.surface,
-                            unfocusedBorderColor = colorScheme.outline
-                        ),
-                        leadingIcon = {
-                            Image(imageVector = Icons.Outlined.Search,
-                                contentDescription = null, colorFilter = ColorFilter.tint(
-                                    colorScheme.primary))
-                        },
-                        trailingIcon = {
-                            AnimatedVisibility(
-                                visible = searchValue.isNotEmpty(),
-                                enter = fadeIn(
-                                    tween(
-                                        500,
-                                        easing = LinearEasing
-                                    )
-                                ) + slideInHorizontally(),
-                                exit = fadeOut()
-                            ) {
+                    Column(Modifier.statusBarsPadding()
+                        .padding(defaultPadding),
+                    horizontalAlignment = Alignment.CenterHorizontally) {
 
-                                SimonIconButton(
-                                    icon = Icons.Filled.Cancel,
-                                    tint = colorScheme.primary
+                        OutlinedTextField(value = searchValue,
+                            onValueChange = { newText ->
+                                appViewModel.performEvent(
+                                    Events.Search(
+                                        newText
+                                    )
+                                )
+                            },
+                            textStyle = typography.bodyMedium.copy(
+                                color = colorScheme.onBackground.copy(0.7f)
+                            ),
+                            placeholder = { BodyText(text = "Search") },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .onGloballyPositioned { coordinates ->
+                                    searchFieldSize = coordinates.size.toSize()
+                                },
+                            shape = shapes.large,
+                            colors = TextFieldDefaults.outlinedTextFieldColors(
+                                containerColor = colorScheme.surface,
+                                unfocusedBorderColor = colorScheme.outline
+                            ),
+                            leadingIcon = {
+                                Image(
+                                    imageVector = Icons.Outlined.Search,
+                                    contentDescription = null, colorFilter = ColorFilter.tint(
+                                        colorScheme.primary
+                                    )
+                                )
+                            },
+                            trailingIcon = {
+                                AnimatedVisibility(
+                                    visible = searchValue.isNotEmpty(),
+                                    enter = fadeIn(
+                                        tween(
+                                            500,
+                                            easing = LinearEasing
+                                        )
+                                    ) + slideInHorizontally(),
+                                    exit = fadeOut()
                                 ) {
-                                    appViewModel.performEvent(Events.Search(""))
+
+                                    SimonIconButton(
+                                        icon = Icons.Filled.Cancel,
+                                        tint = colorScheme.primary
+                                    ) {
+                                        appViewModel.performEvent(Events.Search(""))
+                                    }
                                 }
                             }
+                        )
+
+                        SearchDropDowns(
+                            expanded = shouldShowDropDown.value,
+                            setExpanded = {},
+                            modifier = Modifier.width(with(LocalDensity.current) { searchFieldSize.width.toDp() }),
+                            items = if (hasMoreItems) searchedCharacters.value.subList(
+                                0,
+                                4
+                            ) else searchedCharacters.value,
+                            hasMoreItems = hasMoreItems,
+                            onClick = { }
+                        ) {
+
                         }
-                    )
-                    
-                    SearchDropDowns(
-                        expanded = shouldShowDropDown.value,
-                        setExpanded = {},
-                        modifier =Modifier .width(with(LocalDensity.current) { searchFieldSize.width.toDp() }),
-                        items =if(hasMoreItems) searchedCharacters.value.subList(0,9) else searchedCharacters.value,
-                        hasMoreItems =hasMoreItems ,
-                        onClick = { }
-                    ) {
-                        
                     }
 
 
