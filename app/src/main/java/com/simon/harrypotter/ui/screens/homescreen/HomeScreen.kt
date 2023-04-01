@@ -7,9 +7,13 @@ import androidx.compose.animation.*
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.*
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Cancel
 import androidx.compose.material.icons.outlined.Search
@@ -30,11 +34,14 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.toSize
+import androidx.compose.ui.zIndex
 import coil.compose.AsyncImage
 import com.simon.data.models.characters.CharactersResponseItem
 import com.simon.data.models.characters.isMale
@@ -52,6 +59,7 @@ import com.simon.harrypotter.ui.components.images.AnimatedImageLoader
 import com.simon.harrypotter.ui.components.images.ScaleAndAlphaArgs
 import com.simon.harrypotter.ui.components.images.calculateDelayAndEasing
 import com.simon.harrypotter.ui.components.images.scaleAndAlpha
+import com.simon.harrypotter.ui.screens.homescreen.components.CharactersRowItem
 import com.simon.harrypotter.ui.theme.defaultPadding
 import org.koin.androidx.compose.koinViewModel
 import timber.log.Timber
@@ -74,7 +82,7 @@ fun HomeScreen(appViewModel: AppViewModel = koinViewModel()){
             ""
         }
     }
-    var searchFieldSize by remember { mutableStateOf(Size.Zero) }
+    var searchFieldSize by remember { mutableStateOf(IntSize.Zero) }
     val shouldShowDropDown = appViewModel.showDropDown.collectAsState(initial = false)
 
 
@@ -118,9 +126,11 @@ fun HomeScreen(appViewModel: AppViewModel = koinViewModel()){
                         })
                 }
                 else{
-                    Column(Modifier.statusBarsPadding()
-                        .padding(defaultPadding),
-                    horizontalAlignment = Alignment.CenterHorizontally) {
+                    Column(
+                        Modifier
+                            .statusBarsPadding()
+                            .padding(defaultPadding),
+                  ) {
 
                         OutlinedTextField(value = searchValue,
                             onValueChange = { newText ->
@@ -133,13 +143,15 @@ fun HomeScreen(appViewModel: AppViewModel = koinViewModel()){
                             textStyle = typography.bodyMedium.copy(
                                 color = colorScheme.onBackground.copy(0.7f)
                             ),
+                            maxLines = 1,
                             placeholder = { BodyText(text = "Search") },
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .onGloballyPositioned { coordinates ->
-                                    searchFieldSize = coordinates.size.toSize()
+                                .onSizeChanged {size ->
+                                searchFieldSize = size
                                 },
-                            shape = shapes.large,
+                            shape =if(shouldShowDropDown.value) shapes.large.copy(bottomStart = CornerSize(0.dp),
+                                bottomEnd = CornerSize(0.dp)) else shapes.large,
                             colors = TextFieldDefaults.outlinedTextFieldColors(
                                 containerColor = colorScheme.surface,
                                 unfocusedBorderColor = colorScheme.outline
@@ -174,19 +186,36 @@ fun HomeScreen(appViewModel: AppViewModel = koinViewModel()){
                             }
                         )
 
-                        SearchDropDowns(
-                            expanded = shouldShowDropDown.value,
-                            setExpanded = {},
-                            modifier = Modifier.width(with(LocalDensity.current) { searchFieldSize.width.toDp() }),
-                            items = if (hasMoreItems) searchedCharacters.value.subList(
-                                0,
-                                4
-                            ) else searchedCharacters.value,
-                            hasMoreItems = hasMoreItems,
-                            onClick = { }
-                        ) {
-
+                        if(shouldShowDropDown.value) {
+                            val items = remember(hasMoreItems) {
+                                if (hasMoreItems) searchedCharacters.value.subList(
+                                    0, 4
+                                ) else searchedCharacters.value
+                            }
+                            LazyColumn(
+                                modifier = Modifier.fillMaxWidth().border(1.dp,
+                                    color = colorScheme.outline, shape = shapes.large
+                                        .copy(topStart = CornerSize(0.dp), topEnd = CornerSize(0.dp))),
+                            ) {
+                                items(items) {
+                                    CharactersRowItem(
+                                        modifier = Modifier.fillMaxWidth(),
+                                        character = it
+                                    )
+                                }
+                            }
                         }
+
+//                        SearchDropDowns(
+//                            expanded = shouldShowDropDown.value,
+//                            setExpanded = {},
+//                            modifier = Modifier.width(with(LocalDensity.current) { searchFieldSize.width.toDp() }),
+//                            items =,
+//                            hasMoreItems = hasMoreItems,
+//                            onClick = { }
+//                        ) {
+//
+//                        }
                     }
 
 

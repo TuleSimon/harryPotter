@@ -31,8 +31,7 @@ fun CharactersRowItem(modifier : Modifier, character:CharactersResponseItem){
         Row(verticalAlignment = Alignment.CenterVertically,
             modifier = modifier
                 .shadowMedium()
-                .background(color = colorScheme.surface, shape = shapes.medium)
-                .clip(shapes.medium)
+                .background(color = colorScheme.surface)
                 .padding(defaultPadding)
                 .clickable {
 
