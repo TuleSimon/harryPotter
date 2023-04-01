@@ -3,6 +3,8 @@ package com.simon.data.di
 import com.simon.data.datastore_storage.DataStoreUtils
 import com.simon.data.datastore_storage.dataStore
 import com.simon.data.network.ktor.ktorHttpClient
+import com.simon.data.network.repositories.NetworkRepository
+import com.simon.data.network.repositories.NetworkRepositoryImpl
 import io.ktor.client.*
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
@@ -13,6 +15,10 @@ import org.koin.dsl.module
 val NetworkModule = module{
     factory  <HttpClient> {
       ktorHttpClient(get())
+    }
+
+    single<NetworkRepository>{
+        NetworkRepositoryImpl(get())
     }
 
 

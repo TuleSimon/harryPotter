@@ -22,21 +22,26 @@ import simonShapes
 
 private val DarkColorScheme = darkColorScheme(
     primary = primary,
+    onPrimary = Color.White,
     secondary = primary,
     tertiary = primary,
     onBackground = onBackgroundDark,
     background = backgroundDark,
-    surface = surfaceDark
+    surface = surfaceDark,
+    outline = onBackgroundDark.copy(0.3f),
+    primaryContainer = primary.copy(0.3f),
 )
 
 private val LightColorScheme = lightColorScheme(
     primary = primary,
+    onPrimary = Color.White,
     secondary = primary,
     tertiary = primary,
     onBackground = onBackground,
+    outline = onBackground.copy(0.3f),
     background = background,
-    surface = surface
-
+    surface = surface,
+    primaryContainer = primary.copy(0.3f),
 )
 
 @Composable
