@@ -63,19 +63,24 @@ fun HomeScreen(appViewModel: AppViewModel = koinViewModel()){
     val eventsState = appViewModel.uiEvents.collectAsState(initial = Events.Idle)
 
     //SEARCH
-    val isSearchMode  = remember{
-        mutableStateOf(false)
+    val isSearchMode  = remember(eventsState.value){
+        eventsState.value is Events.Search
     }
-    val searchValue = rememberSaveable(){
-        mutableStateOf("")
+    val searchValue =remember(eventsState.value){
+        if(eventsState.value is Events.Search){
+            (eventsState.value as Events.Search).searchText
+        }
+        else{
+            ""
+        }
     }
     var searchFieldSize by remember { mutableStateOf(Size.Zero) }
     val shouldShowDropDown = appViewModel.showDropDown.collectAsState(initial = false)
 
 
     //BACK HANDLER
-    BackHandler(isSearchMode.value) {
-        isSearchMode.value=false
+    BackHandler(isSearchMode) {
+        appViewModel.performEvent(Events.Idle)
     }
 
     //API
@@ -101,19 +106,19 @@ fun HomeScreen(appViewModel: AppViewModel = koinViewModel()){
 
     Scaffold(
         topBar = {
-            Crossfade(targetState = isSearchMode.value) { value ->
+            Crossfade(targetState = isSearchMode) { value ->
                 if(!value) {
                     SimonAppBars(title = stringResource(id = R.string.welcome),
                         shouldShowBackButton = false,
                         actions = {
                             SimonIconButton(icon = Icons.Outlined.Search) {
-                                isSearchMode.value=true
+                                appViewModel.performEvent(Events.Idle)
                             }
                         })
                 }
                 else{
-                    OutlinedTextField(value = searchValue.value,
-                        onValueChange ={newText -> searchValue.value=newText },
+                    OutlinedTextField(value = searchValue,
+                        onValueChange ={newText -> appViewModel.performEvent(Events.Search(newText)) },
                         textStyle = typography.bodyMedium.copy(
                             color = colorScheme.onBackground.copy(0.7f)),
                         placeholder ={ BodyText(text = "Search") },
@@ -136,7 +141,7 @@ fun HomeScreen(appViewModel: AppViewModel = koinViewModel()){
                         },
                         trailingIcon = {
                             AnimatedVisibility(
-                                visible = searchValue.value.isNotEmpty(),
+                                visible = searchValue.isNotEmpty(),
                                 enter = fadeIn(
                                     tween(
                                         500,
@@ -150,7 +155,7 @@ fun HomeScreen(appViewModel: AppViewModel = koinViewModel()){
                                     icon = Icons.Filled.Cancel,
                                     tint = colorScheme.primary
                                 ) {
-                                    searchValue.value = ""
+                                    appViewModel.performEvent(Events.Search(""))
                                 }
                             }
                         }
@@ -162,7 +167,7 @@ fun HomeScreen(appViewModel: AppViewModel = koinViewModel()){
                         modifier =Modifier .width(with(LocalDensity.current) { searchFieldSize.width.toDp() }),
                         items =if(hasMoreItems) searchedCharacters.value.subList(0,9) else searchedCharacters.value,
                         hasMoreItems =hasMoreItems ,
-                        onClick = { 3}
+                        onClick = { }
                     ) {
                         
                     }
