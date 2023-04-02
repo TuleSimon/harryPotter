@@ -2,9 +2,12 @@ package com.simon.harrypotter.ui.screens.viewCharacter
 
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme.colorScheme
+import androidx.compose.material3.MaterialTheme.shapes
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
@@ -28,8 +31,10 @@ import com.simon.harrypotter.R
 import com.simon.harrypotter.core.viewModels.AppViewModel
 import com.simon.harrypotter.core.viewModels.Events
 import com.simon.harrypotter.ui.components.BodyText
+import com.simon.harrypotter.ui.components.BodyTextSmall
 import com.simon.harrypotter.ui.components.TitleTextMedium
 import com.simon.harrypotter.ui.components.appbars.SimonAppBars
+import shadowSmall
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -58,7 +63,7 @@ fun ViewCharacter(characterId:String,appViewModel:AppViewModel ) {
         AsyncImage(model =R.drawable.cover , contentDescription = null,
         modifier = Modifier
             .fillMaxWidth()
-            .fillMaxHeight(0.4f)
+            .fillMaxHeight(0.45f)
             .align(Alignment.TopCenter)
             .alpha(0.8f), contentScale = ContentScale.Crop)
         
@@ -108,6 +113,16 @@ fun ViewCharacter(characterId:String,appViewModel:AppViewModel ) {
 
                 BodyText(text = character?.actor ?: "Unknown", textAlign = TextAlign.Center,
                 color = Color.White)
+
+                LazyRow(Modifier.fillMaxWidth()) {
+                    items(character?.alternateNames?: emptyList()){name ->
+
+                        BodyTextSmall(text = name,
+                        modifier = Modifier.shadowSmall().border(1.dp, colorScheme.primary).background(color = colorScheme.primaryContainer,
+                            shape  =shapes.medium).padding(5.dp))
+
+                    }
+                }
 
 
             }
