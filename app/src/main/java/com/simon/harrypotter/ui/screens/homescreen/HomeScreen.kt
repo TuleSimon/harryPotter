@@ -41,6 +41,7 @@ import com.simon.harrypotter.ui.components.images.AnimatedImageLoader
 import com.simon.harrypotter.ui.components.images.ScaleAndAlphaArgs
 import com.simon.harrypotter.ui.components.images.calculateDelayAndEasing
 import com.simon.harrypotter.ui.components.images.scaleAndAlpha
+import com.simon.harrypotter.ui.navGraph.Screen
 import com.simon.harrypotter.ui.screens.homescreen.components.SearchLazyColumn
 import com.simon.harrypotter.ui.screens.homescreen.components.SearchTextField
 import com.simon.harrypotter.ui.theme.defaultPadding
@@ -49,7 +50,7 @@ import org.koin.androidx.compose.koinViewModel
 import timber.log.Timber
 
 @Composable
-fun HomeScreen(appViewModel: AppViewModel = koinViewModel()){
+fun HomeScreen(appViewModel: AppViewModel ){
 
     //UI STATE
     val eventsState = appViewModel.uiEvents.collectAsState(initial = Events.Idle)
@@ -142,7 +143,9 @@ fun HomeScreen(appViewModel: AppViewModel = koinViewModel()){
 
                         if(shouldShowDropDown.value) {
 
-                            SearchLazyColumn(items = searchedCharacters.value)
+                            SearchLazyColumn(items = searchedCharacters.value){character ->
+                                navigateToViewCharacter(appViewModel,character.id)
+                            }
 
                         }
 
@@ -183,7 +186,9 @@ fun HomeScreen(appViewModel: AppViewModel = koinViewModel()){
                                     colorScheme.onBackground.copy(0.05f)
                                 ),
                             errorImage = R.drawable.icon_boy
-                        )
+                        ){
+
+                        }
                     }
                 } else if (characters.value is NetworkResult.Success) {
                     itemsIndexed((characters.value as NetworkResult.Success<List<CharactersResponseItem>>).data,
@@ -213,8 +218,10 @@ fun HomeScreen(appViewModel: AppViewModel = koinViewModel()){
                                 )
                                 .graphicsLayer(alpha = alpha, scaleX = scale, scaleY = scale),
                             errorImage = if (character.gender.isMale()) R.drawable.icon_boy
-                            else R.drawable.icon_girl
-                        )
+                            else R.drawable.icon_girl,
+                        ){
+                            navigateToViewCharacter(appViewModel,character.id)
+                        }
                     }
                 } else if (characters.value is NetworkResult.Failure) {
 
@@ -264,4 +271,9 @@ fun ErrorLayout(onError:()->Unit){
 
     }
 
+}
+
+
+fun navigateToViewCharacter(appViewModel: AppViewModel,id:String){
+    appViewModel.performEvent(Events.NavigateToScreen(Screen.ViewCharacterScreen,id))
 }

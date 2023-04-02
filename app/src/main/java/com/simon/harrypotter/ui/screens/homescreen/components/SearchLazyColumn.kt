@@ -37,7 +37,8 @@ import onlyBottomRounded
 
 @Composable
 fun SearchLazyColumn(modifier: Modifier=Modifier,
-                     items: List<CharactersResponseItem>) {
+                     items: List<CharactersResponseItem>,
+            onClick:(CharactersResponseItem)->Unit) {
     val state = rememberLazyListState()
 
     LazyColumn(
@@ -45,8 +46,9 @@ fun SearchLazyColumn(modifier: Modifier=Modifier,
         .fillMaxWidth()
         .border(
             1.dp,
-            color = colorScheme.primary, shape =onlyBottomRounded)
-        .background(shape=onlyBottomRounded, color = Color.Unspecified)
+            color = colorScheme.primary, shape = onlyBottomRounded
+        )
+        .background(shape = onlyBottomRounded, color = Color.Unspecified)
         .clip(onlyBottomRounded)
         .clipToBounds()
         ,state = state,
@@ -54,7 +56,9 @@ fun SearchLazyColumn(modifier: Modifier=Modifier,
 
         if (items.isEmpty()) {
 
-
+            item{
+                EmptyLayout()
+            }
 
         } else {
             itemsIndexed(items) { index, item ->
@@ -66,10 +70,13 @@ fun SearchLazyColumn(modifier: Modifier=Modifier,
                 val (scale, alpha) = scaleAndAlpha(args = args, animation = animation)
 
                 CharactersRowItem(
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier
+                        .fillMaxWidth()
                         .graphicsLayer(alpha = alpha, scaleX = scale, scaleY = scale),
                     character = item
-                )
+                ){
+                    onClick(item)
+                }
             }
         }
     }
@@ -92,10 +99,9 @@ private fun EmptyLayout(){
 
         Spacer(modifier = Modifier.height(20.dp))
 
-        TitleText(text = "AN ERROR OCCURRED")
+        TitleText(text = "NO CHARACTERS FOUND")
         BodyText(
-            text = "we couldn't fetch characters right, " +
-                    "now please try again later",
+            text = "we couldn't find a character that matches your search, please try searching again",
             textAlign = TextAlign.Center,
             modifier = Modifier.fillMaxWidth(0.75f)
         )

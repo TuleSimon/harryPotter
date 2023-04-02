@@ -71,7 +71,9 @@ sealed class Events(){
     data class Search(val searchText: String):Events()
     object Idle:Events()
 
-    data class NavigateToScreen(val screen:Screen):Events()
+    data class NavigateToScreen(val screen:Screen, val  args:Any):Events()
+
+    object NavigateUp:Events()
 
 }
 

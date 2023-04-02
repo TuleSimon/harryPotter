@@ -28,7 +28,8 @@ import shadowMedium
 import shadowSmall
 
 @Composable
-fun CharactersRowItem(modifier : Modifier, character:CharactersResponseItem){
+fun CharactersRowItem(modifier : Modifier, character:CharactersResponseItem,
+        onClick:()->Unit){
 
 
         Row(verticalAlignment = Alignment.CenterVertically,
@@ -37,7 +38,7 @@ fun CharactersRowItem(modifier : Modifier, character:CharactersResponseItem){
                 .background(color = colorScheme.surface, shape = RoundedCornerShape(0.dp))
                 .padding(defaultPadding)
                 .clickable {
-
+                    onClick()
                 }, horizontalArrangement = Arrangement.spacedBy(10.dp)
         ) {
 

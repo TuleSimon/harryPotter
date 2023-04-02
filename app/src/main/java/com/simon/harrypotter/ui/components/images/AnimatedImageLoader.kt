@@ -7,6 +7,7 @@ import androidx.compose.animation.*
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.basicMarquee
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -37,14 +38,17 @@ import com.simon.harrypotter.ui.components.BodyText
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun AnimatedImageLoader(character:CharactersResponseItem?,modifier: Modifier,
-                        @DrawableRes errorImage:Int,loader:Boolean=false) {
+                        @DrawableRes errorImage:Int,loader:Boolean=false,
+                        onClick:()->Unit) {
 
 
     val loading = remember {
         mutableStateOf(true)
     }
 
-    Column(modifier = Modifier.fillMaxWidth(),
+    Column(modifier = Modifier.fillMaxWidth().clickable {
+        onClick()
+    },
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(10.dp)) {
         AsyncImage(
@@ -78,7 +82,7 @@ fun AnimatedImageLoader(character:CharactersResponseItem?,modifier: Modifier,
                 color = colorScheme.onBackground.copy(0.1f),
                 shape = shapes.small, highlight = PlaceholderHighlight.fade()
             ), textAlign = TextAlign.Center,
-        maxlines = 2)
+            maxlines = 2)
 
 
     }
