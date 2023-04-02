@@ -3,19 +3,17 @@ package com.simon.harrypotter.core.viewModels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.simon.data.models.characters.CharactersResponseItem
-import com.simon.data.network.repositories.NetworkRepository
-import com.simon.data.network.repositories.NetworkResult
+import com.simon.data.data.network.repositories.NetworkRepository
+import com.simon.data.data.network.repositories.NetworkResult
 import com.simon.harrypotter.ui.navGraph.Screen
-import kotlinx.coroutines.ObsoleteCoroutinesApi
-import kotlinx.coroutines.channels.BroadcastChannel
-import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
 class AppViewModel(private val repository: NetworkRepository):ViewModel() {
 
-    private val _characters = MutableStateFlow<NetworkResult<List<CharactersResponseItem>>>(NetworkResult.Idle)
+    private val _characters = MutableStateFlow<NetworkResult<List<CharactersResponseItem>>>(
+        NetworkResult.Idle)
     val characters : Flow<NetworkResult<List<CharactersResponseItem>>>
         get() = _characters
 
