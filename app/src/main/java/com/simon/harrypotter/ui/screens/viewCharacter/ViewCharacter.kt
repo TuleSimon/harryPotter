@@ -8,6 +8,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.MaterialTheme.shapes
+import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
@@ -21,6 +22,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
@@ -114,12 +116,15 @@ fun ViewCharacter(characterId:String,appViewModel:AppViewModel ) {
                 BodyText(text = character?.actor ?: "Unknown", textAlign = TextAlign.Center,
                 color = Color.White)
 
-                LazyRow(Modifier.fillMaxWidth()) {
+                LazyRow(Modifier.padding(top=10.dp).wrapContentWidth(Alignment.CenterHorizontally), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
                     items(character?.alternateNames?: emptyList()){name ->
 
                         BodyTextSmall(text = name,
-                        modifier = Modifier.shadowSmall().border(1.dp, colorScheme.primary).background(color = colorScheme.primaryContainer,
-                            shape  =shapes.medium).padding(5.dp))
+                        modifier = Modifier.border(1.dp, colorScheme.primary,shapes.medium).
+                        background(color = colorScheme.primary,
+                            shape  =shapes.medium).padding(5.dp),
+                            textStyle = typography.bodySmall.copy(color = Color.White,
+                            fontWeight = FontWeight.Bold))
 
                     }
                 }
