@@ -12,6 +12,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
@@ -32,21 +34,23 @@ fun CharactersRowItem(modifier : Modifier, character:CharactersResponseItem){
         Row(verticalAlignment = Alignment.CenterVertically,
             modifier = modifier
                 .shadowMedium(shapes = RoundedCornerShape(0.dp))
-                .background(color = colorScheme.surface,shape = RoundedCornerShape(0.dp))
+                .background(color = colorScheme.surface, shape = RoundedCornerShape(0.dp))
                 .padding(defaultPadding)
                 .clickable {
 
                 }, horizontalArrangement = Arrangement.spacedBy(10.dp)
         ) {
 
-            AnimatedImageLoader(
-                image = character.image,
+            AsyncImage(
+                 character.image,
                 modifier = Modifier
                     .fillMaxWidth(0.15f)
                     .aspectRatio(1f)
                     .clip(CircleShape),
-                errorImage = if (character.gender.isMale()) R.drawable.icon_boy
-                else R.drawable.icon_girl
+                contentDescription = null,
+                contentScale = ContentScale.Crop,
+                error = painterResource(id = if (character.gender.isMale()) R.drawable.icon_boy
+                else R.drawable.icon_girl)
             )
 
             Column(

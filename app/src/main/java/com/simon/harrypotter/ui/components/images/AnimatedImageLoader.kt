@@ -77,7 +77,7 @@ fun AnimatedImageLoader(character:CharactersResponseItem?,modifier: Modifier,
                 if (!loader) loading.value else true,
                 color = colorScheme.onBackground.copy(0.1f),
                 shape = shapes.small, highlight = PlaceholderHighlight.fade()
-            ).basicMarquee(Int.MAX_VALUE), textAlign = TextAlign.Center,
+            ), textAlign = TextAlign.Center,
         maxlines = 2)
 
 
