@@ -5,11 +5,16 @@ import com.simon.data.data.network.repositories.NetworkRepository
 import com.simon.data.data.network.repositories.NetworkRepositoryImpl
 import com.simon.data.data.network.repositories.NetworkResult
 import com.simon.data.models.characters.CharactersResponseItem
+import com.simon.data.models.randomPhoto.RandomPhoto
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import org.koin.androidx.compose.get
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
+import timber.log.Timber
 
 class CharactersDataSource(): NetworkRepository,KoinComponent {
 
@@ -47,5 +52,7 @@ class CharactersDataSource(): NetworkRepository,KoinComponent {
         }
     }
 
-
+    override fun getRandomPhoto(): Flow<NetworkResult<RandomPhoto>> {
+        return networkRepositoryImpl.getRandomPhoto()
+    }
 }

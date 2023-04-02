@@ -19,6 +19,7 @@ import io.ktor.serialization.kotlinx.json.*
 import io.ktor.utils.io.*
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
+import timber.log.Timber
 
 private const val TIME_OUT: Long = 60_000
 
@@ -40,7 +41,7 @@ internal fun ktorHttpClient() = HttpClient(OkHttp) {
     install(Logging) {
         logger = object : Logger {
             override fun log(message: String) {
-                Log.v("Logger Ktor =>", message)
+                Timber.tag("Logger Ktor =>").v(message)
             }
         }
         level = LogLevel.ALL
@@ -71,15 +72,17 @@ internal fun ktorHttpClient() = HttpClient(OkHttp) {
         register(ContentType.Application.Json, converter)
     }
 
+
     install(HttpTimeout) { // 4
         requestTimeoutMillis = TIME_OUT
         connectTimeoutMillis = TIME_OUT
         socketTimeoutMillis = TIME_OUT
     }
 
+
     install(ResponseObserver) {
         onResponse { response ->
-            Log.d("HTTP status:", "${response.status.value}")
+            Timber.tag("HTTP status:").d(response.status.value.toString())
         }
     }
 

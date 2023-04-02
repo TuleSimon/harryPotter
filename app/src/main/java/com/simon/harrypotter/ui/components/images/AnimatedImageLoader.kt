@@ -5,26 +5,38 @@ package com.simon.harrypotter.ui.components.images
 import androidx.annotation.DrawableRes
 import androidx.compose.animation.*
 import androidx.compose.animation.core.*
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.basicMarquee
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme.colorScheme
+import androidx.compose.material3.MaterialTheme.shapes
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.google.accompanist.placeholder.PlaceholderHighlight
 import com.google.accompanist.placeholder.material.fade
 import com.google.accompanist.placeholder.placeholder
+import com.simon.data.models.characters.CharactersResponseItem
+import com.simon.harrypotter.ui.components.BodyText
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun AnimatedImageLoader(image:Any,modifier: Modifier,
+fun AnimatedImageLoader(character:CharactersResponseItem?,modifier: Modifier,
                         @DrawableRes errorImage:Int,loader:Boolean=false) {
 
 
@@ -32,13 +44,18 @@ fun AnimatedImageLoader(image:Any,modifier: Modifier,
         mutableStateOf(true)
     }
 
+    Column(modifier = Modifier.fillMaxWidth(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(10.dp)) {
         AsyncImage(
-            modifier = modifier.placeholder(if(!loader) loading.value else true,
+            modifier = modifier.placeholder(
+                if (!loader) loading.value else true,
                 color = colorScheme.onBackground.copy(0.1f),
-            shape = CircleShape, highlight = PlaceholderHighlight.fade()),
+                shape = CircleShape, highlight = PlaceholderHighlight.fade()
+            ),
             contentScale = ContentScale.Crop,
             model = ImageRequest.Builder(LocalContext.current)
-                .data(image)
+                .data(character?.image)
                 .build(),
             onError = {
 
@@ -49,11 +66,22 @@ fun AnimatedImageLoader(image:Any,modifier: Modifier,
                 loading.value = false
             },
             onLoading = {
-                        loading.value =true
+                loading.value = true
             },
-            error = painterResource(id =errorImage),
+            error = painterResource(id = errorImage),
             contentDescription = null
         )
+
+        BodyText(text = character?.name?:"Loading",
+            modifier = Modifier.placeholder(
+                if (!loader) loading.value else true,
+                color = colorScheme.onBackground.copy(0.1f),
+                shape = shapes.small, highlight = PlaceholderHighlight.fade()
+            ).basicMarquee(Int.MAX_VALUE), textAlign = TextAlign.Center,
+        maxlines = 2)
+
+
+    }
 
 }
 

@@ -2,6 +2,7 @@ package com.simon.data.data.network.repositories
 
 import com.simon.data.models.characters.CharactersResponseItem
 import com.simon.data.data.network.ktor.HttpRoutes
+import com.simon.data.models.randomPhoto.RandomPhoto
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.plugins.*
@@ -19,6 +20,22 @@ internal class NetworkRepositoryImpl(private val client:HttpClient) : NetworkRep
         when(request.status.value){
             in 200..299 -> {
                 val body:List<CharactersResponseItem> = request.body()
+                emit(NetworkResult.Success(body))
+            }
+            else ->{
+                request.throwKtorException()
+            }
+        }
+
+    }.defaultHandler()
+
+    override fun getRandomPhoto(): Flow<NetworkResult<RandomPhoto>> =flow{
+        val request =client.get(HttpRoutes.RANDOM_PHOTOS){
+            parameter(HttpRoutes.CLIENT_KEY_PARAMS,"WyU8qaDTRw_OXWKZYn-gc3K84tNAiVMO4cnMlj_aSSs")
+        }
+        when(request.status.value){
+            in 200..299 -> {
+                val body:RandomPhoto = request.body()
                 emit(NetworkResult.Success(body))
             }
             else ->{
@@ -52,7 +69,7 @@ fun<T> Flow<NetworkResult<T>>.defaultHandler(): Flow<NetworkResult<T>> {
 
                 emit(NetworkResult.Failure(it.message.toString()))
 
-                }
+            }
 
             else -> {
                 emit(NetworkResult.Failure(it.message.toString()))

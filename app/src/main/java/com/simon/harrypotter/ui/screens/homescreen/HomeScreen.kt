@@ -171,7 +171,7 @@ fun HomeScreen(appViewModel: AppViewModel = koinViewModel()){
                 if (isLoading) {
                     items(10) {
                         AnimatedImageLoader(
-                            "",
+                            null,
                             loader = true,
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -201,7 +201,7 @@ fun HomeScreen(appViewModel: AppViewModel = koinViewModel()){
                         val (scale, alpha) = scaleAndAlpha(args = args, animation = animation)
 
                         AnimatedImageLoader(
-                            character.image,
+                            character,
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .aspectRatio(1f)
