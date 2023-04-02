@@ -4,8 +4,12 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.parcelize.Parcelize
 import android.os.Parcelable
+import androidx.room.Embedded
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 
-    @Serializable
+@Serializable
+    @Entity(tableName = CHARACTERS_TABLE)
     @Parcelize
     data class CharactersResponseItem(
         @SerialName("actor")
@@ -32,6 +36,7 @@ import android.os.Parcelable
         val hogwartsStudent: Boolean,
         @SerialName("house")
         val house: String,
+        @PrimaryKey
         @SerialName("id")
         val id: String,
         @SerialName("image")
@@ -43,6 +48,7 @@ import android.os.Parcelable
         @SerialName("species")
         val species: String,
         @SerialName("wand")
+        @Embedded("wand")
         val wand: Wand,
         @SerialName("wizard")
         val wizard: Boolean,
@@ -68,3 +74,5 @@ fun String.isMale(): Boolean{
 fun String.isFeMale(): Boolean{
     return this.equals("female",true)
 }
+
+const val CHARACTERS_TABLE = "characters"

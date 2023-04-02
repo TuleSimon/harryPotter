@@ -28,7 +28,7 @@ import com.simon.harrypotter.ui.components.BodyText
 import com.simon.harrypotter.ui.components.buttons.SimonIconButton
 
 @Composable
-fun SearchTextField(searchValue:String, onValueChange:(String)->Unit,
+fun SearchTextField(modifier: Modifier=Modifier,searchValue:String, onValueChange:(String)->Unit,
                     shouldShowDropDown:Boolean=false,
                     onCancel:()->Unit){
     OutlinedTextField(value = searchValue,
@@ -41,8 +41,7 @@ fun SearchTextField(searchValue:String, onValueChange:(String)->Unit,
         ),
         maxLines = 1,
         placeholder = { BodyText(text = "Search") },
-        modifier = Modifier
-            .fillMaxWidth(),
+        modifier = modifier,
         shape =if(shouldShowDropDown) MaterialTheme.shapes.large.copy(bottomStart = CornerSize(0.dp),
             bottomEnd = CornerSize(0.dp)
         ) else MaterialTheme.shapes.large,
