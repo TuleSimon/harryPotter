@@ -120,9 +120,6 @@ object Dependencies {
   const val TOASTY = "com.github.GrenderG:Toasty:1.5.2"
   const val TIMBER = "com.jakewharton.timber:timber:5.0.1"
 
-
-
-
 }
 
 // android test dependencies

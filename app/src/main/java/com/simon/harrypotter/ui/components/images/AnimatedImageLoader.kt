@@ -32,6 +32,7 @@ import coil.request.ImageRequest
 import com.google.accompanist.placeholder.PlaceholderHighlight
 import com.google.accompanist.placeholder.material.fade
 import com.google.accompanist.placeholder.placeholder
+import com.mxalbert.sharedelements.SharedElementsRootScope
 import com.simon.data.models.characters.CharactersResponseItem
 import com.simon.harrypotter.ui.components.BodyText
 

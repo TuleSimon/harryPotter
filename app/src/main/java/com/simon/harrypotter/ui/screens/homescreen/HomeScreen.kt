@@ -45,6 +45,8 @@ import com.simon.harrypotter.ui.navGraph.Screen
 import com.simon.harrypotter.ui.screens.homescreen.components.SearchLazyColumn
 import com.simon.harrypotter.ui.screens.homescreen.components.SearchTextField
 import com.simon.harrypotter.ui.theme.defaultPadding
+import kotlinx.coroutines.flow.cancellable
+import kotlinx.coroutines.flow.collect
 import onlyBottomRounded
 import org.koin.androidx.compose.koinViewModel
 import timber.log.Timber
@@ -84,7 +86,12 @@ fun HomeScreen(appViewModel: AppViewModel ){
     val searchedCharacters = appViewModel.searchedCharacters.collectAsState(initial = emptyList())
 
     LaunchedEffect(true){
-        getCharacters()
+        appViewModel.characters.cancellable().collect{
+            if(it !is NetworkResult.Success){
+                getCharacters()
+            }
+            return@collect
+        }
     }
     val isLoading = remember(characters.value){
         Timber.v(characters.value.toString())
