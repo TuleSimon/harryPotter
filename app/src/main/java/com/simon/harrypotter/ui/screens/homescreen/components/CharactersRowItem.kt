@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Divider
 import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.MaterialTheme.shapes
@@ -30,8 +31,8 @@ fun CharactersRowItem(modifier : Modifier, character:CharactersResponseItem){
 
         Row(verticalAlignment = Alignment.CenterVertically,
             modifier = modifier
-                .shadowMedium()
-                .background(color = colorScheme.surface)
+                .shadowMedium(shapes = RoundedCornerShape(0.dp))
+                .background(color = colorScheme.surface,shape = RoundedCornerShape(0.dp))
                 .padding(defaultPadding)
                 .clickable {
 

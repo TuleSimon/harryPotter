@@ -60,6 +60,8 @@ import com.simon.harrypotter.ui.components.images.ScaleAndAlphaArgs
 import com.simon.harrypotter.ui.components.images.calculateDelayAndEasing
 import com.simon.harrypotter.ui.components.images.scaleAndAlpha
 import com.simon.harrypotter.ui.screens.homescreen.components.CharactersRowItem
+import com.simon.harrypotter.ui.screens.homescreen.components.SearchLazyColumn
+import com.simon.harrypotter.ui.screens.homescreen.components.SearchTextField
 import com.simon.harrypotter.ui.theme.defaultPadding
 import org.koin.androidx.compose.koinViewModel
 import timber.log.Timber
@@ -82,7 +84,6 @@ fun HomeScreen(appViewModel: AppViewModel = koinViewModel()){
             ""
         }
     }
-    var searchFieldSize by remember { mutableStateOf(IntSize.Zero) }
     val shouldShowDropDown = appViewModel.showDropDown.collectAsState(initial = false)
 
 
@@ -132,7 +133,7 @@ fun HomeScreen(appViewModel: AppViewModel = koinViewModel()){
                             .padding(defaultPadding),
                   ) {
 
-                        OutlinedTextField(value = searchValue,
+                        SearchTextField(searchValue = searchValue,
                             onValueChange = { newText ->
                                 appViewModel.performEvent(
                                     Events.Search(
@@ -140,82 +141,16 @@ fun HomeScreen(appViewModel: AppViewModel = koinViewModel()){
                                     )
                                 )
                             },
-                            textStyle = typography.bodyMedium.copy(
-                                color = colorScheme.onBackground.copy(0.7f)
-                            ),
-                            maxLines = 1,
-                            placeholder = { BodyText(text = "Search") },
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .onSizeChanged {size ->
-                                searchFieldSize = size
-                                },
-                            shape =if(shouldShowDropDown.value) shapes.large.copy(bottomStart = CornerSize(0.dp),
-                                bottomEnd = CornerSize(0.dp)) else shapes.large,
-                            colors = TextFieldDefaults.outlinedTextFieldColors(
-                                containerColor = colorScheme.surface,
-                                unfocusedBorderColor = colorScheme.outline
-                            ),
-                            leadingIcon = {
-                                Image(
-                                    imageVector = Icons.Outlined.Search,
-                                    contentDescription = null, colorFilter = ColorFilter.tint(
-                                        colorScheme.primary
-                                    )
-                                )
-                            },
-                            trailingIcon = {
-                                AnimatedVisibility(
-                                    visible = searchValue.isNotEmpty(),
-                                    enter = fadeIn(
-                                        tween(
-                                            500,
-                                            easing = LinearEasing
-                                        )
-                                    ) + slideInHorizontally(),
-                                    exit = fadeOut()
-                                ) {
+                            shouldShowDropDown = shouldShowDropDown.value,
+                        ) {
+                                appViewModel.performEvent(Events.Search(""))
 
-                                    SimonIconButton(
-                                        icon = Icons.Filled.Cancel,
-                                        tint = colorScheme.primary
-                                    ) {
-                                        appViewModel.performEvent(Events.Search(""))
-                                    }
-                                }
                             }
-                        )
 
                         if(shouldShowDropDown.value) {
-                            val items = remember(hasMoreItems) {
-                                if (hasMoreItems) searchedCharacters.value.subList(
-                                    0, 4
-                                ) else searchedCharacters.value
-                            }
-                            LazyColumn(
-                                modifier = Modifier.fillMaxWidth().border(1.dp,
-                                    color = colorScheme.outline, shape = shapes.large
-                                        .copy(topStart = CornerSize(0.dp), topEnd = CornerSize(0.dp))),
-                            ) {
-                                items(items) {
-                                    CharactersRowItem(
-                                        modifier = Modifier.fillMaxWidth(),
-                                        character = it
-                                    )
-                                }
-                            }
+                            SearchLazyColumn(items = searchedCharacters.value)
                         }
 
-//                        SearchDropDowns(
-//                            expanded = shouldShowDropDown.value,
-//                            setExpanded = {},
-//                            modifier = Modifier.width(with(LocalDensity.current) { searchFieldSize.width.toDp() }),
-//                            items =,
-//                            hasMoreItems = hasMoreItems,
-//                            onClick = { }
-//                        ) {
-//
-//                        }
                     }
 
 

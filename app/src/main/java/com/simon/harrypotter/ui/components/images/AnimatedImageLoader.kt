@@ -5,6 +5,7 @@ package com.simon.harrypotter.ui.components.images
 import androidx.annotation.DrawableRes
 import androidx.compose.animation.*
 import androidx.compose.animation.core.*
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme.colorScheme
@@ -91,6 +92,25 @@ fun scaleAndAlpha(
 
 @Composable
 fun LazyGridState.calculateDelayAndEasing(index: Int, columnCount: Int): Pair<Int, Easing> {
+    val row = index / columnCount
+    val column = index % columnCount
+    val firstVisibleRow = firstVisibleItemIndex
+    val visibleRows = layoutInfo.visibleItemsInfo.count()
+    val scrollingToBottom = firstVisibleRow < row
+    val isFirstLoad = visibleRows == 0
+    val rowDelay = 200 * when {
+        isFirstLoad -> row // initial load
+        scrollingToBottom -> visibleRows + firstVisibleRow - row // scrolling to bottom
+        else -> 1 // scrolling to top
+    }
+    val scrollDirectionMultiplier = if (scrollingToBottom || isFirstLoad) 1 else -1
+    val columnDelay = column * 150 * scrollDirectionMultiplier
+    val easing = if (scrollingToBottom || isFirstLoad) LinearOutSlowInEasing else FastOutSlowInEasing
+    return rowDelay + columnDelay to easing
+}
+
+@Composable
+fun LazyListState.calculateDelayAndEasing(index: Int, columnCount: Int): Pair<Int, Easing> {
     val row = index / columnCount
     val column = index % columnCount
     val firstVisibleRow = firstVisibleItemIndex
