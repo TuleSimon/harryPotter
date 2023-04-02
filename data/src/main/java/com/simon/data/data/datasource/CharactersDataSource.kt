@@ -21,7 +21,6 @@ class CharactersDataSource(): NetworkRepository,KoinComponent {
         localRepository.getCharacters().collect{offline ->
             if(offline is NetworkResult.Success){
                 emit(offline)
-
                 //check if online data has any new data
                 networkRepositoryImpl.getCharacters().collect{online ->
                     if(online is NetworkResult.Success){
