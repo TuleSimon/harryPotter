@@ -16,7 +16,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.view.WindowCompat
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
-import com.mxalbert.sharedelements.SharedElementsRoot
 import com.simon.harrypotter.core.viewModels.AppViewModel
 import com.simon.harrypotter.core.viewModels.Events
 import com.simon.harrypotter.ui.navGraph.SetUpNavGraph
@@ -40,9 +39,7 @@ class MainActivity : ComponentActivity() {
                 ) {
                     val navController = rememberAnimatedNavController()
                     val appViewModel:AppViewModel = koinViewModel()
-                    SharedElementsRoot {
-                        SetUpNavGraph(navController = navController, appViewModel)
-                    }
+                    SetUpNavGraph(navController = navController, appViewModel)
 
                     val events = appViewModel.uiEvents.collectAsState(initial =Events.Idle)
                     LaunchedEffect(events.value ){

@@ -3,18 +3,24 @@ package com.simon.harrypotter.ui.screens.viewCharacter
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
@@ -43,46 +49,62 @@ fun ViewCharacter(characterId:String,appViewModel:AppViewModel ) {
         }
     }
 
-    Scaffold(
-        topBar = {
-            SimonAppBars(title = character?.name ?: "",
-                shouldShowBackButton = true,
-               ){
-                appViewModel.performEvent(Events.NavigateUp)
-            }
-        }
-    ) {
-
-        Column(
-            Modifier.padding(top = it.calculateTopPadding()).fillMaxWidth(),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally,
+    Box() {
+        
+        AsyncImage(model =R.drawable.cover , contentDescription = null,
+        modifier = Modifier.fillMaxWidth().fillMaxHeight(0.4f)
+            .align(Alignment.TopCenter).alpha(0.8f), contentScale = ContentScale.Crop)
+        
+        Scaffold(
+            topBar = {
+                SimonAppBars(
+                    title = character?.name ?: "",
+                    shouldShowBackButton = true,
+                    appBarColor = Color.White,
+                    colors = TopAppBarDefaults.centerAlignedTopAppBarColors(containerColor = Color.Transparent),
+                ) {
+                    appViewModel.performEvent(Events.NavigateUp)
+                }
+            },
+            containerColor = Color.Transparent
         ) {
 
-            AsyncImage(
-                character?.image,
-                modifier = Modifier
-                    .fillMaxWidth(0.35f)
-                    .aspectRatio(1f)
-                    .border(3.dp, colorScheme.onBackground, CircleShape)
-                    .padding(5.dp)
-                    .background(color = colorScheme.onBackground, shape = CircleShape)
-                    .clip(CircleShape),
-                contentDescription = null,
-                contentScale = ContentScale.Crop,
-                error = painterResource(
-                    id = if (character?.gender?.isMale() == true) R.drawable.icon_boy
-                    else R.drawable.icon_girl
+            Column(
+                Modifier
+                    .padding(top = it.calculateTopPadding())
+                    .fillMaxWidth()
+                    .verticalScroll(rememberScrollState()),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+
+                AsyncImage(
+                    character?.image,
+                    modifier = Modifier
+                        .fillMaxWidth(0.35f)
+                        .aspectRatio(1f)
+                        .border(3.dp, colorScheme.onPrimary, CircleShape)
+                        .padding(5.dp)
+                        .background(color = colorScheme.background, shape = CircleShape)
+                        .clip(CircleShape),
+                    contentDescription = null,
+                    contentScale = ContentScale.Crop,
+                    error = painterResource(
+                        id = if (character?.gender?.isMale() == true) R.drawable.icon_boy
+                        else R.drawable.icon_girl
+                    )
                 )
-            )
 
 
-            TitleTextMedium(text = character?.name ?: "", textAlign = TextAlign.Center)
+                TitleTextMedium(text = character?.name ?: "", textAlign = TextAlign.Center,
+                color = Color.White)
 
-            BodyText(text = character?.actor ?: "Unknown", textAlign = TextAlign.Center)
+                BodyText(text = character?.actor ?: "Unknown", textAlign = TextAlign.Center,
+                color = Color.White)
 
+
+            }
 
         }
-
     }
 }

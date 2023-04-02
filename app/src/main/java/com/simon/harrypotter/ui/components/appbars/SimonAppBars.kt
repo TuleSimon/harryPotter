@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -20,6 +21,7 @@ fun SimonAppBars(
     @DrawableRes navigationIcon: Int = R.drawable.icon_back,
     actions: @Composable() (RowScope.() -> Unit) = {},
     colors: TopAppBarColors = TopAppBarDefaults.centerAlignedTopAppBarColors(containerColor = MaterialTheme.colorScheme.background),
+    appBarColor: Color = MaterialTheme.colorScheme.onBackground,
     onClick: () -> Unit = { },
 ) {
 
@@ -32,7 +34,8 @@ fun SimonAppBars(
                         modifier = Modifier
                             .width(20.dp),
                         painter = painterResource(id = navigationIcon),
-                        contentDescription = title
+                        contentDescription = title,
+                        tint = appBarColor
                     )
                 }
             }
@@ -43,7 +46,7 @@ fun SimonAppBars(
                 modifier = Modifier.padding(horizontal = 25.dp).fillMaxWidth(),
                 textAlign = TextAlign.Center,
                 style = MaterialTheme.typography.headlineLarge
-                    .copy(color = MaterialTheme.colorScheme.onBackground)
+                    .copy(color = appBarColor)
             )
         },
 
