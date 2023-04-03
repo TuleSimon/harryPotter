@@ -33,9 +33,12 @@ import com.simon.harrypotter.R
 import com.simon.harrypotter.core.viewModels.AppViewModel
 import com.simon.harrypotter.core.viewModels.Events
 import com.simon.harrypotter.ui.components.BodyText
+import com.simon.harrypotter.ui.components.BodyTextBold
 import com.simon.harrypotter.ui.components.BodyTextSmall
 import com.simon.harrypotter.ui.components.TitleTextMedium
 import com.simon.harrypotter.ui.components.appbars.SimonAppBars
+import com.simon.harrypotter.ui.theme.defaultPadding
+import shadowMedium
 import shadowSmall
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -65,7 +68,7 @@ fun ViewCharacter(characterId:String,appViewModel:AppViewModel ) {
         AsyncImage(model =R.drawable.cover , contentDescription = null,
         modifier = Modifier
             .fillMaxWidth()
-            .fillMaxHeight(0.45f)
+            .fillMaxHeight(0.48f)
             .align(Alignment.TopCenter)
             .alpha(0.8f), contentScale = ContentScale.Crop)
         
@@ -116,21 +119,64 @@ fun ViewCharacter(characterId:String,appViewModel:AppViewModel ) {
                 BodyText(text = character?.actor ?: "Unknown", textAlign = TextAlign.Center,
                 color = Color.White)
 
-                LazyRow(Modifier.padding(top=10.dp).wrapContentWidth(Alignment.CenterHorizontally), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                LazyRow(
+                    Modifier
+                        .padding(top = 10.dp)
+                        .wrapContentWidth(Alignment.CenterHorizontally),
+                    horizontalArrangement = Arrangement.spacedBy(10.dp)) {
                     items(character?.alternateNames?: emptyList()){name ->
 
                         BodyTextSmall(text = name,
-                        modifier = Modifier.border(1.dp, colorScheme.primary,shapes.medium).
-                        background(color = colorScheme.primary,
-                            shape  =shapes.medium).padding(5.dp),
+                        modifier = Modifier
+                            .border(1.dp, colorScheme.primary, shapes.medium)
+                            .background(
+                                color = colorScheme.primary,
+                                shape = shapes.medium
+                            )
+                            .padding(5.dp),
                             textStyle = typography.bodySmall.copy(color = Color.White,
                             fontWeight = FontWeight.Bold))
 
                     }
                 }
 
+                Row(
+                    Modifier
+                        .padding(defaultPadding)
+                        .fillMaxWidth()
+                        .shadowMedium()
+                        .background(color = colorScheme.surface, shape = shapes.medium)
+                        .padding(defaultPadding),
+                    horizontalArrangement = Arrangement.spacedBy(10.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                    ){
+
+                    AsyncImage(model = R.drawable.icon_wand,
+                        contentDescription = null,modifier = Modifier
+                            .fillMaxWidth(0.2f)
+                            .aspectRatio(1f)
+                            .background(
+                                color = colorScheme.primary,
+                                shape = shapes.medium
+                            )
+                            .padding(5.dp),
+                        contentScale = ContentScale.FillHeight)
+                    
+                    Column(Modifier.weight(1f),
+                        verticalArrangement = Arrangement.Center) {
+                        BodyTextBold(text = "${character?.wand?.wood?.uppercase()?:"Unknown"} wood" +
+                                " - ${ character?.wand?.core?:"Unknown"} core")
+                        BodyText(text = "${character?.wand?.length?.toInt()?.toString()?:"Unknown"} length")
+                    }
+
+                }
+
+
 
             }
+
+
+
 
         }
     }
