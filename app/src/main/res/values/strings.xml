@@ -9,4 +9,9 @@
     <string name="date_of_birth">Date of Birth: %1$s</string>
     <string name="length">%1$s length</string>
     <string name="wood">%1$s wood</string>
+    <string name="we_couldn_t_fetch_characters_right_now_please_try_again_later">we couldn\'t fetch characters right, now please try again later</string>
+    <string name="retry">Retry</string>
+    <string name="an_error_occurred">AN ERROR OCCURRED</string>
+    <string name="we_couldn_t_find_a_character_that_matches_your_search_please_try_searching_again">we couldn\'t find a character that matches your search, please try searching again</string>
+    <string name="no_characters_found">NO CHARACTERS FOUND</string>
 </resources>

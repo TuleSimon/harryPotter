@@ -53,8 +53,8 @@ class AppViewModel(private val repository: NetworkRepository):ViewModel() {
         }
     }
 
-    val showDropDown = uiEvents.combine(searchedCharacters){event, searchCharacters ->
-        if(event is Events.Search && searchCharacters.isNotEmpty()){
+    val showDropDown = uiEvents.combine(searchedCharacters){event, _ ->
+        if(event is Events.Search ){
             return@combine true
         }
         else{

@@ -1,4 +1,6 @@
-@file:OptIn(ExperimentalMaterial3Api::class)
+@file:OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3Api::class,
+    ExperimentalMaterial3Api::class
+)
 
 package com.simon.harrypotter.ui.screens.homescreen
 
@@ -104,7 +106,7 @@ fun HomeScreen(appViewModel: AppViewModel ){
 
     Scaffold(
         topBar = {
-            Crossfade(targetState = isSearchMode) { value ->
+            Crossfade(targetState = isSearchMode, label = "crossFade") { value ->
                 if(!value) {
                     SimonAppBars(title = stringResource(id = R.string.welcome),
                         shouldShowBackButton = false,
@@ -115,8 +117,6 @@ fun HomeScreen(appViewModel: AppViewModel ){
                         })
                 }
                 else{
-
-                    val searchSize =remember{ mutableStateOf( IntSize(0,0))}
 
                     Column(
                         Modifier
@@ -138,10 +138,7 @@ fun HomeScreen(appViewModel: AppViewModel ){
                                 )
                             },
                             modifier = Modifier
-                                .fillMaxWidth()
-                                .onGloballyPositioned { size ->
-                                    searchSize.value = size.size
-                                },
+                                .fillMaxWidth(),
                             shouldShowDropDown = shouldShowDropDown.value,
                         ) {
                             appViewModel.performEvent(Events.Search(""))
@@ -263,16 +260,15 @@ fun ErrorLayout(onError:()->Unit){
 
         Spacer(modifier = Modifier.height(20.dp))
 
-        TitleText(text = "AN ERROR OCCURRED")
+        TitleText(text = stringResource(R.string.an_error_occurred))
         BodyText(
-            text = "we couldn't fetch characters right, " +
-                    "now please try again later",
+            text = stringResource(R.string.we_couldn_t_fetch_characters_right_now_please_try_again_later),
             textAlign = TextAlign.Center,
             modifier = Modifier.fillMaxWidth(0.75f)
         )
 
         Spacer(modifier = Modifier.height(20.dp))
-        FilledButton(modifier = Modifier.fillMaxWidth(0.75F), text = "Retry") {
+        FilledButton(modifier = Modifier.fillMaxWidth(0.75F), text = stringResource(R.string.retry)) {
             onError()
         }
 
