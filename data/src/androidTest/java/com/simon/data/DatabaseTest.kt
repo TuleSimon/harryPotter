@@ -5,35 +5,29 @@ import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.gson.Gson
-import com.simon.data.data.local.LocalRepository
 import com.simon.data.data.local.database.CharactersDatabase
 import com.simon.data.data.local.database.CharactersDatabaseDao
 import com.simon.data.data.local.database.typeConverters.CharacterTypeConverter
 import com.simon.data.data.local.database.typeConverters.GsonParser
-import com.simon.data.data.network.repositories.NetworkResult
 import com.simon.data.models.characters.CharactersResponseItem
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.last
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
-import org.junit.After
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import java.io.IOException
 
 @RunWith(AndroidJUnit4::class)
 @ExperimentalCoroutinesApi
-class LocalRepositoryTest {
+class DatabaseTest {
 
 
     // Declare the DAO and the repository as lateinit variables
     private lateinit var database: CharactersDatabase
     private lateinit var dao: CharactersDatabaseDao
-    private lateinit var localRepository: LocalRepository
 
     // Create a Room in-memory database and initialize the DAO and repository
     @Before
@@ -44,19 +38,18 @@ class LocalRepositoryTest {
             .addTypeConverter(CharacterTypeConverter(GsonParser(Gson())))
             .build()
         dao = database.dao
-        localRepository = LocalRepository(dao)
     }
 
 
 
     @Test
-    fun testGetCharacters_whenDatabaseIsEmpty_shouldReturnFailure() = runTest {
+    fun testGetCharacters_whenDatabaseIsEmpty_shouldReturnFailure()  = runTest{
         // Call getCharacters on the localRepository
-        val resultFlow = localRepository.getCharacters()
+        val resultFlow = dao.getAllCharacters()
 
         // Collect the resultFlow and assert that it returns a NetworkResult.Failure
-        val result = resultFlow.last()
-        assert(result is NetworkResult.Failure)
+        val result = resultFlow.first()
+        Assert.assertTrue(result.isEmpty())
     }
 
     @Test
@@ -67,12 +60,12 @@ class LocalRepositoryTest {
             dao.insertAll(data)
 
             // Call getCharacters on the localRepository
-            val resultFlow = localRepository.getCharacters()
+            val resultFlow = dao.getAllCharacters()
 
             // Collect the resultFlow and assert that it returns a NetworkResult.Success with the inserted character
-            val result = resultFlow.last()
-            assert(result is NetworkResult.Success)
-            Assert.assertEquals(result,NetworkResult.Success(data))
+            val result = resultFlow.first()
+            Assert.assertEquals(result, data)
+
         }
 
     @Test
@@ -82,16 +75,14 @@ class LocalRepositoryTest {
         //insert
         dao.insertAll(data)
 
-        val resultFlow = localRepository.getCharacters()
-        val result = resultFlow.last()
-        assert(result is NetworkResult.Success)
+        val result = dao.getAllCharacters()
+        Assert.assertEquals(result.first(),data)
 
         //delete
-        localRepository.deleteAllCharacters()
+        dao.deleteAll()
 
-        val resultFlow2 = localRepository.getCharacters()
-        val result2 = resultFlow.last()
-        assert(result is NetworkResult.Failure)
+        val resultFlow2 = dao.getAllCharacters().first()
+        Assert.assertEquals(resultFlow2, emptyList<CharactersResponseItem>())
     }
 }
 
