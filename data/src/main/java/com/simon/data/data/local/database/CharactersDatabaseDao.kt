@@ -22,4 +22,7 @@ interface CharactersDatabaseDao {
         @Delete
         suspend fun delete(user: CharactersResponseItem)
 
+        @Query("DELETE FROM characters")
+        suspend fun deleteAll()
+
 }

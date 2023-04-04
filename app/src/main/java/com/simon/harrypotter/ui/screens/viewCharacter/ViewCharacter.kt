@@ -58,22 +58,24 @@ fun ViewCharacter(characterId:String,appViewModel:AppViewModel ) {
 
     val systemController = rememberSystemUiController()
     val darkTheme = isSystemInDarkTheme()
-    DisposableEffect( true ){
-        systemController.setStatusBarColor(Color.Transparent,false)
+    DisposableEffect(true) {
+        systemController.setStatusBarColor(Color.Transparent, false)
         onDispose {
-            systemController.setStatusBarColor(Color.Transparent,!darkTheme)
+            systemController.setStatusBarColor(Color.Transparent, !darkTheme)
         }
     }
 
     Box() {
-        
-        AsyncImage(model =R.drawable.cover , contentDescription = null,
-        modifier = Modifier
-            .fillMaxWidth()
-            .fillMaxHeight(0.48f)
-            .align(Alignment.TopCenter)
-            .alpha(0.8f), contentScale = ContentScale.Crop)
-        
+
+        AsyncImage(
+            model = R.drawable.cover, contentDescription = null,
+            modifier = Modifier
+                .fillMaxWidth()
+                .fillMaxHeight(0.48f)
+                .align(Alignment.TopCenter)
+                .alpha(0.8f), contentScale = ContentScale.Crop
+        )
+
         Scaffold(
             topBar = {
                 SimonAppBars(
@@ -115,119 +117,132 @@ fun ViewCharacter(characterId:String,appViewModel:AppViewModel ) {
                 )
 
 
-                TitleTextMedium(text = character?.name ?: stringResource(id = R.string.unknown),
+                TitleTextMedium(
+                    text = character?.name ?: stringResource(id = R.string.unknown),
                     textAlign = TextAlign.Center,
-                color = Color.White)
+                    color = Color.White
+                )
 
-                BodyText(text = character?.actor ?: stringResource(id = R.string.unknown),
+                BodyText(
+                    text = character?.actor ?: stringResource(id = R.string.unknown),
                     textAlign = TextAlign.Center,
-                color = Color.White)
+                    color = Color.White
+                )
 
                 LazyRow(
                     Modifier
                         .padding(top = 10.dp)
                         .wrapContentWidth(Alignment.CenterHorizontally),
-                    horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                    items(character?.alternateNames?: emptyList()){name ->
+                    horizontalArrangement = Arrangement.spacedBy(10.dp)
+                ) {
+                    items(character?.alternateNames ?: emptyList()) { name ->
 
-                        BodyTextSmall(text = name,
-                        modifier = Modifier
-                            .border(1.dp, colorScheme.primary, shapes.medium)
-                            .background(
-                                color = colorScheme.primary,
-                                shape = shapes.medium
+                        BodyTextSmall(
+                            text = name,
+                            modifier = Modifier
+                                .border(1.dp, colorScheme.primary, shapes.medium)
+                                .background(
+                                    color = colorScheme.primary,
+                                    shape = shapes.medium
+                                )
+                                .padding(5.dp),
+                            textStyle = typography.bodySmall.copy(
+                                color = Color.White,
+                                fontWeight = FontWeight.Bold
                             )
-                            .padding(5.dp),
-                            textStyle = typography.bodySmall.copy(color = Color.White,
-                            fontWeight = FontWeight.Bold))
+                        )
 
                     }
                 }
 
-                Row(
-                    Modifier
-                        .padding(defaultPadding)
-                        .fillMaxWidth()
-                        .shadowMedium()
-                        .background(color = colorScheme.surface, shape = shapes.medium)
-                        .padding(defaultPadding),
-                    horizontalArrangement = Arrangement.spacedBy(10.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                    ){
+                    AttributeRow(
+                        header = stringResource(
+                            R.string.wood,
+                            character?.wand?.wood?.uppercase()
+                                ?: stringResource(id = R.string.unknown)
+                        ) + " - ${character?.wand?.core ?: stringResource(id = R.string.unknown)} core",
+                        subTitle = stringResource(
+                            R.string.length,
+                            character?.wand?.length?.toInt()?.toString()
+                                ?: stringResource(id = R.string.unknown)
+                        ),
+                        icon = R.drawable.icon_wand
+                    )
+
+                    AttributeRow(
+                        header = stringResource(
+                            R.string.date_of_birth,
+                            character?.dateOfBirth?.uppercase()
+                                ?: stringResource(id = R.string.unknown)
+                        ), subTitle = stringResource(
+                            R.string.alive, (character?.alive?.toString()
+                                ?: stringResource(id = R.string.unknown))
+                        ),
+                        icon = R.drawable.icon_calendar
+                    )
 
 
-                AttributeRow(header =stringResource(R.string.wood,
-                    character?.wand?.wood?.uppercase()
-                        ?: stringResource(id = R.string.unknown)
-                ) + " - ${ character?.wand?.core?:stringResource(id = R.string.unknown)} core",
-                subTitle =stringResource(R.string.length,
-                    character?.wand?.length?.toInt()?.toString()
-                        ?: stringResource(id = R.string.unknown)),
-                    icon = R.drawable.icon_wand)
+                    AttributeRow(
+                        header = stringResource(
+                            R.string.gender,
+                            character?.gender?.uppercase() ?: stringResource(id = R.string.unknown)
+                        ), subTitle = "Student/Staff: ${
+                            if (character?.hogwartsStudent == true) "Student"
+                            else "Staff"
+                        }",
+                        icon = R.drawable.icon_gender
+                    )
 
-                AttributeRow(header = stringResource(
-                    R.string.date_of_birth,
-                    character?.dateOfBirth?.uppercase() ?:
-                    stringResource(id = R.string.unknown)
-                ), subTitle = stringResource(R.string.alive, (character?.alive?.toString()
-                    ?:stringResource(id = R.string.unknown))),
-                    icon = R.drawable.icon_calendar)
-
-
-                AttributeRow(header =stringResource(
-                    R.string.gender,
-                    character?.gender?.uppercase() ?: stringResource(id = R.string.unknown)
-                ), subTitle = "Student/Staff: ${if(character?.hogwartsStudent==true) "Student"
-                else "Staff"}",
-                    icon = R.drawable.icon_gender)
-
-                AttributeRow(header =stringResource(
-                    R.string.house,
-                    character?.house?.uppercase() ?: stringResource(R.string.unknown)
-                ) , subTitle = stringResource(R.string.wizard, character?.wizard == true),
-                    icon = R.drawable.icon_house)
+                    AttributeRow(
+                        header = stringResource(
+                            R.string.house,
+                            character?.house?.uppercase() ?: stringResource(R.string.unknown)
+                        ), subTitle = stringResource(R.string.wizard, character?.wizard == true),
+                        icon = R.drawable.icon_house
+                    )
 
 
+                }
 
 
             }
+        }
+    }
 
 
+    @Composable
+    fun AttributeRow(header: String, subTitle: String, @DrawableRes icon: Int) {
+        Row(
+            Modifier
+                .padding(defaultPadding)
+                .fillMaxWidth()
+                .shadowMedium()
+                .background(color = colorScheme.surface, shape = shapes.medium)
+                .padding(defaultPadding),
+            horizontalArrangement = Arrangement.spacedBy(10.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
 
+            AsyncImage(
+                model = icon,
+                contentDescription = null, modifier = Modifier
+                    .fillMaxWidth(0.2f)
+                    .aspectRatio(1f)
+                    .background(
+                        color = colorScheme.primary,
+                        shape = shapes.medium
+                    )
+                    .padding(5.dp),
+                contentScale = ContentScale.FillHeight
+            )
+
+            Column(
+                Modifier.weight(1f),
+                verticalArrangement = Arrangement.Center
+            ) {
+                BodyTextBold(text = header)
+                BodyText(text = subTitle)
+            }
 
         }
     }
-}
-
-@Composable
-fun AttributeRow(header:String, subTitle:String, @DrawableRes icon:Int){
-    Row(
-        Modifier
-            .padding(defaultPadding)
-            .fillMaxWidth()
-            .shadowMedium()
-            .background(color = colorScheme.surface, shape = shapes.medium)
-            .padding(defaultPadding),
-        horizontalArrangement = Arrangement.spacedBy(10.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ){
-
-        AsyncImage(model = icon,
-            contentDescription = null,modifier = Modifier
-                .fillMaxWidth(0.2f)
-                .aspectRatio(1f)
-                .background(
-                    color = colorScheme.primary,
-                    shape = shapes.medium
-                )
-                .padding(5.dp),
-            contentScale = ContentScale.FillHeight)
-
-        Column(Modifier.weight(1f),
-            verticalArrangement = Arrangement.Center) {
-            BodyTextBold(text =header)
-            BodyText(text =subTitle)
-        }
-
-    }
-}

@@ -23,5 +23,13 @@ internal class LocalRepository(private val dao: CharactersDatabaseDao): NetworkR
         dao.insertAll(onlineData)
     }
 
+    suspend fun deleteCharacters(onlineData: CharactersResponseItem) {
+        dao.delete(onlineData)
+    }
+
+    suspend fun deleteAllCharacters() {
+        dao.deleteAll()
+    }
+
 
 }

@@ -56,7 +56,7 @@ object Dependencies {
   const val KOLTINX_COROUTINES = "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4"
   const val ANDROIDX_VIEWMODEL = "androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.0"
   const val KOTLINX_COROUTINES_ANDROID = "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4"
-
+  const val COROUTINES_TEST =  "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4"
 
 
   // Room
@@ -106,6 +106,7 @@ object Dependencies {
   const val KTOR_KOTLINX_SERILIZATION = "io.ktor:ktor-serialization-kotlinx-json:${Versions.KTOR_VERSION}"
   const val KTOR_CLIENT_LOGGING =  "io.ktor:ktor-client-logging-jvm:${Versions.KTOR_VERSION}"
   const val KTOR_CLIENT_AUTH = "io.ktor:ktor-client-auth-jvm:2.0.0"
+  const val KTOR_MOCK = "io.ktor:ktor-client-mock:${Versions.KTOR_VERSION}"
 
 
 
@@ -125,6 +126,7 @@ object Dependencies {
 // android test dependencies
 fun DependencyHandler.androidTest() {
   testImplementation(Dependencies.JUNIT)
+  testImplementation(Dependencies.COROUTINES_TEST)
   androidTestImplementation(Dependencies.ANDROIDX_JUNIT_TEST)
   androidTestImplementation(Dependencies.ESPRESSO_CORE)
   androidTestImplementation(Dependencies.ANDROIDX_COMPOSE_UI_TEST_JUNIT4)
@@ -160,6 +162,7 @@ fun DependencyHandler.ktorDependencies() {
   implementation(Dependencies.KTOR_KOTLINX_SERILIZATION)
   implementation(Dependencies.KTOR_CLIENT_LOGGING)
   implementation(Dependencies.KTOR_CLIENT_AUTH)
+  testImplementation(Dependencies.KTOR_MOCK)
 
 }
 
