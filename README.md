@@ -33,8 +33,6 @@ A simple Harry Potter app built using the Harry Potter Api
 
 ## Demo
 
-Insert gif or link to demo
-
 https://user-images.githubusercontent.com/58936865/229834273-d3ea13f1-461f-422e-8e56-19bf3a3d94fb.mp4
 
 
