@@ -1,5 +1,6 @@
 package com.simon.harrypotter.ui.screens.viewCharacter
 
+import androidx.annotation.DrawableRes
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
@@ -22,6 +23,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -113,10 +115,12 @@ fun ViewCharacter(characterId:String,appViewModel:AppViewModel ) {
                 )
 
 
-                TitleTextMedium(text = character?.name ?: "", textAlign = TextAlign.Center,
+                TitleTextMedium(text = character?.name ?: stringResource(id = R.string.unknown),
+                    textAlign = TextAlign.Center,
                 color = Color.White)
 
-                BodyText(text = character?.actor ?: "Unknown", textAlign = TextAlign.Center,
+                BodyText(text = character?.actor ?: stringResource(id = R.string.unknown),
+                    textAlign = TextAlign.Center,
                 color = Color.White)
 
                 LazyRow(
@@ -151,25 +155,38 @@ fun ViewCharacter(characterId:String,appViewModel:AppViewModel ) {
                     verticalAlignment = Alignment.CenterVertically
                     ){
 
-                    AsyncImage(model = R.drawable.icon_wand,
-                        contentDescription = null,modifier = Modifier
-                            .fillMaxWidth(0.2f)
-                            .aspectRatio(1f)
-                            .background(
-                                color = colorScheme.primary,
-                                shape = shapes.medium
-                            )
-                            .padding(5.dp),
-                        contentScale = ContentScale.FillHeight)
-                    
-                    Column(Modifier.weight(1f),
-                        verticalArrangement = Arrangement.Center) {
-                        BodyTextBold(text = "${character?.wand?.wood?.uppercase()?:"Unknown"} wood" +
-                                " - ${ character?.wand?.core?:"Unknown"} core")
-                        BodyText(text = "${character?.wand?.length?.toInt()?.toString()?:"Unknown"} length")
-                    }
 
-                }
+                AttributeRow(header =stringResource(R.string.wood,
+                    character?.wand?.wood?.uppercase()
+                        ?: stringResource(id = R.string.unknown)
+                ) + " - ${ character?.wand?.core?:stringResource(id = R.string.unknown)} core",
+                subTitle =stringResource(R.string.length,
+                    character?.wand?.length?.toInt()?.toString()
+                        ?: stringResource(id = R.string.unknown)),
+                    icon = R.drawable.icon_wand)
+
+                AttributeRow(header = stringResource(
+                    R.string.date_of_birth,
+                    character?.dateOfBirth?.uppercase() ?:
+                    stringResource(id = R.string.unknown)
+                ), subTitle = stringResource(R.string.alive, (character?.alive?.toString()
+                    ?:stringResource(id = R.string.unknown))),
+                    icon = R.drawable.icon_calendar)
+
+
+                AttributeRow(header =stringResource(
+                    R.string.gender,
+                    character?.gender?.uppercase() ?: stringResource(id = R.string.unknown)
+                ), subTitle = "Student/Staff: ${if(character?.hogwartsStudent==true) "Student"
+                else "Staff"}",
+                    icon = R.drawable.icon_gender)
+
+                AttributeRow(header =stringResource(
+                    R.string.house,
+                    character?.house?.uppercase() ?: stringResource(R.string.unknown)
+                ) , subTitle = stringResource(R.string.wizard, character?.wizard == true),
+                    icon = R.drawable.icon_house)
+
 
 
 
@@ -179,5 +196,38 @@ fun ViewCharacter(characterId:String,appViewModel:AppViewModel ) {
 
 
         }
+    }
+}
+
+@Composable
+fun AttributeRow(header:String, subTitle:String, @DrawableRes icon:Int){
+    Row(
+        Modifier
+            .padding(defaultPadding)
+            .fillMaxWidth()
+            .shadowMedium()
+            .background(color = colorScheme.surface, shape = shapes.medium)
+            .padding(defaultPadding),
+        horizontalArrangement = Arrangement.spacedBy(10.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ){
+
+        AsyncImage(model = icon,
+            contentDescription = null,modifier = Modifier
+                .fillMaxWidth(0.2f)
+                .aspectRatio(1f)
+                .background(
+                    color = colorScheme.primary,
+                    shape = shapes.medium
+                )
+                .padding(5.dp),
+            contentScale = ContentScale.FillHeight)
+
+        Column(Modifier.weight(1f),
+            verticalArrangement = Arrangement.Center) {
+            BodyTextBold(text =header)
+            BodyText(text =subTitle)
+        }
+
     }
 }
